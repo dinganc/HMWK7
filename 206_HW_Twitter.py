@@ -59,9 +59,7 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, parser=tweepy.parsers.JSONParser()) 
 
 ## Write the rest of your code here!
-search_terms={}
-while len(search_terms.keys())<3:
-    search_terms[input("what search?\n")]=''
+
 #### Recommended order of tasks: ####
 ## 1. Set up the caching pattern start -- the dictionary and the try/except 
 ## 		statement shown in class.
@@ -69,6 +67,7 @@ def load_chahe(search_term):
     try:
         cache=json.loads(open('{}'.format(search_term),'r').read())
         cache_status='S'
+        print("cache found")
     except:
         cache={}
         cache_status='F'
@@ -81,7 +80,7 @@ def search (search_term):
     cache_status=rtr[0]
     cache=rtr[1]
     if cache_status=='F':#no cahe loaded
-        searched_tweets = api.search(q=search_term, rpp=100, count=100)
+        searched_tweets = api.search(q=search_term, rpp=5, count=5)
         cache=searched_tweets
         open('{}'.format(search_term),'w').write(json.dumps(searched_tweets))
     else:#cahce loaded
@@ -91,14 +90,20 @@ def search (search_term):
 ## 3. Using a loop, invoke your function, save the return value in a variable, and explore the 
 ##		data you got back!
 
-for term in search_terms.keys():
-    search_terms[term]=search(term)
-    print(search_terms[term])
+i=0
+got_pack=[]
+while i < 3:
+    search_term=input("please enter a term to search \n")
+    print("fetching")
+    got=search(search_term)
+    i+=1
 ## 4. With what you learn from the data -- e.g. how exactly to find the 
 ##		text of each tweet in the big nested structure -- write code to print out 
 ## 		content from 5 tweets, as shown in the linked example.
-
-
+    for j in got['statuses']:
+        print ("TEXT: {}".format(j['text']))
+        print("CREATED AT: {}".format(j['created_at']))
+        print("\n")
 
 
 
